@@ -1,0 +1,11 @@
+
+
+.banner{
+    position: absolute !important;
+    bottom: 50px !important;
+}
+
+.password-btn{
+    position: absolute !important;
+    right: 100px !important;
+}

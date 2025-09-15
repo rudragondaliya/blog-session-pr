@@ -1,0 +1,69 @@
+<%- include("../partials/header") %>
+
+
+<a href="/changePass" class="btn btn-dark mt-3 password-btn">
+  Change Password
+</a>
+
+
+<section class="container my-5">
+  <h2 class="fw-bold mb-4">Your Profile</h2>
+  <div class="row g-4">
+
+   
+    <div class="col-lg-4">
+      <div class="p-4 bg-white rounded-4 shadow-sm text-center">
+        <img src="<%= user.avatar || '/images/default-avatar.png' %>" alt="Avatar" class="img-fluid rounded-circle mb-3" style="width:150px;height:150px;object-fit:cover;">
+        <h4 class="fw-bold"><%= user.username %></h4>
+        <p class="text-muted"><%= user.email %></p>
+        <p class="text-muted"><%= user.bio %></p>
+
+        
+        <div class="d-flex flex-column gap-2 mt-3">
+          <a href="/profile/edit" class="btn btn-dark rounded-pill">Edit Profile</a>
+          <form action="/profile/delete" method="POST">
+            <button type="submit" class="btn btn-outline-danger rounded-pill">Delete Profile</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="col-lg-8">
+      <div class="p-4 bg-white rounded-4 shadow-sm">
+        <h4 class="fw-bold mb-4">Your Blogs</h4>
+
+        <table class="table table-hover align-middle">
+          <thead class="table-dark">
+            <tr>
+              <th>Title</th>
+              <th>Created At</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% blogs.forEach(blog => { %>
+            <tr>
+              <td><%= blog.title %></td>
+              <td><%= blog.createdAt.toDateString() %></td>
+              <td class="d-flex gap-2">
+                <a href="/blogs/edit/<%= blog._id %>" class="btn btn-sm btn-primary">Edit</a>
+                <form action="/blogs/delete/<%= blog._id %>" method="POST">
+                  <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                </form>
+              </td>
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+
+        <% if (blogs.length === 0) { %>
+          <p class="text-muted mt-3">You haven't added any blogs yet.</p>
+        <% } %>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<%- include("../partials/footer") %>

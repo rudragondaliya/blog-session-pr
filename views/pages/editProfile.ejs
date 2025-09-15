@@ -1,0 +1,32 @@
+<%- include("../partials/header", { title }) %>
+
+<div class="container my-5">
+  <div class="card shadow-sm rounded-4 p-4 bg-white">
+    <h2 class="fw-bold mb-4">Edit Profile</h2>
+
+    <form action="/profile/edit" method="POST" enctype="multipart/form-data">
+      
+      <div class="mb-3">
+        <label class="form-label">Username</label>
+        <input type="text" name="username" class="form-control" value="<%= user.username %>" required>
+      </div>
+
+     
+      <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input type="email" name="email" class="form-control" value="<%= user.email %>" required>
+      </div>
+
+    
+      <div class="mb-3">
+        <label class="form-label">Avatar</label><br>
+        <img src="<%= user.avatar || '/images/default-avatar.png' %>" alt="Avatar" class="rounded-circle mb-2" style="width: 80px; height: 80px;">
+        <input type="file" name="avatar" class="form-control">
+      </div>
+
+      <button type="submit" class="btn btn-primary">Save Changes</button>
+    </form>
+  </div>
+</div>
+
+<%- include("../partials/footer") %>

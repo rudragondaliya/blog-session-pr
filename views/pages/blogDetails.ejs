@@ -1,0 +1,100 @@
+<%- include("../partials/header", { title }) %>
+
+<div class="container my-5">
+  <div class="card shadow-sm rounded-4 p-4 bg-white">
+
+   
+    <h1 class="fw-bold mb-2"><%= blog.title %></h1>
+    <p class="text-muted mb-3">
+      By <strong><%= blog.author ? blog.author.username : "Anonymous" %></strong> • 
+      <%= blog.createdAt.toDateString() %>
+    </p>
+
+   
+    <% if (blog.image) { %>
+      <img src="<%= blog.image %>" 
+           class="img-fluid rounded mb-4" 
+           style="max-height: 400px; object-fit: cover;">
+    <% } %>
+
+   
+    <p class="mb-4"><%= blog.content %></p>
+
+   
+    <% if(user) { %>
+      <div class="d-flex gap-2 mb-4">
+        <button id="likeBtn" class="btn btn-danger btn-sm rounded-pill">
+          ❤️ Like (<span id="likeCount"><%= blog.likes || 0 %></span>)
+        </button>
+        <button id="dislikeBtn" class="btn btn-secondary btn-sm rounded-pill">
+          👎 Dislike (<span id="dislikeCount"><%= blog.dislikes || 0 %></span>)
+        </button>
+      </div>
+    <% } else { %>
+      <p class="text-muted">Login to like or dislike this blog.</p>
+    <% } %>
+
+    <hr>
+
+   
+    <h4 class="mb-3">Comments (<%= blog.comments.length %>)</h4>
+    <div id="commentsList">
+      <% blog.comments.forEach(comment => { %>
+        <div class="border rounded p-3 mb-2 bg-light">
+          <strong><%= comment.author.username %>:</strong> <%= comment.text %>
+        </div>
+      <% }) %>
+    </div>
+
+    
+    <% if(user) { %>
+      <form id="commentForm" class="mt-3">
+        <textarea name="text" class="form-control mb-2" placeholder="Write a comment..." required></textarea>
+        <button type="submit" class="btn btn-primary btn-sm">Post Comment</button>
+      </form>
+    <% } else { %>
+      <p class="text-muted mt-3">Login to post a comment.</p>
+    <% } %>
+
+  </div>
+</div>
+
+<script>
+  const blogId = "<%= blog._id %>";
+
+
+  document.getElementById("likeBtn")?.addEventListener("click", async () => {
+    const res = await fetch(`/blogs/${blogId}/like`, { method: "POST" });
+    const data = await res.json();
+    document.getElementById("likeCount").textContent = data.likes;
+  });
+
+ 
+  document.getElementById("dislikeBtn")?.addEventListener("click", async () => {
+    const res = await fetch(`/blogs/${blogId}/dislike`, { method: "POST" });
+    const data = await res.json();
+    document.getElementById("dislikeCount").textContent = data.dislikes;
+  });
+
+
+  document.getElementById("commentForm")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const text = e.target.text.value;
+
+    const res = await fetch(`/blogs/${blogId}/comment`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text })
+    });
+
+    const newComment = await res.json();
+    const commentHTML = `
+      <div class="border rounded p-3 mb-2 bg-light">
+        <strong>${newComment.author.username}:</strong> ${newComment.text}
+      </div>`;
+    document.getElementById("commentsList").innerHTML += commentHTML;
+    e.target.reset();
+  });
+</script>
+
+<%- include("../partials/footer") %>
